@@ -5,4 +5,7 @@ type Node struct {
 	Value    int
 	Next     *Node
 	Previous *Node
+
+	After  *Node
+	Before *Node
 }
