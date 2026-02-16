@@ -1,0 +1,27 @@
+# Go build files
+/bin/
+/dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test output
+*.test
+*.out
+
+# Environment files
+.env
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# VS Code
+.vscode/
+
+# OS files (optional but recommended)
+.DS_Store
+Thumbs.db

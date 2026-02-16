@@ -6,34 +6,32 @@ import (
 )
 
 type ZeroEvenOdd struct {
-	n     int
-	currN int
+	n int
 
-	evenCh chan struct{}
-	oddCh  chan struct{}
-	zeroCh chan struct{}
+	evenCh chan int
+	oddCh  chan int
+	zeroCh chan int
 }
 
 func NewZeroEvenOdd(n int) *ZeroEvenOdd {
-	zeroCh := make(chan struct{}, 1)
-
+	zeroCh := make(chan int, 1)
+	zeroCh <- 1
 	return &ZeroEvenOdd{
-		n:     n,
-		currN: 0,
+		n: n,
 
-		evenCh: make(chan struct{}, 1),
-		oddCh:  make(chan struct{}, 1),
+		evenCh: make(chan int, 1),
+		oddCh:  make(chan int, 1),
 		zeroCh: zeroCh,
 	}
 }
 
 func (z *ZeroEvenOdd) Zero(printNumber func(int)) {
-	for range z.zeroCh {
-		printNumber(z.currN)
-		if z.currN%2 == 0 {
-			z.evenCh <- struct{}{}
+	for v := range z.zeroCh {
+		printNumber(0)
+		if v%2 == 0 {
+			z.evenCh <- v
 		} else {
-			z.oddCh <- struct{}{}
+			z.oddCh <- v
 		}
 	}
 	close(z.oddCh)
@@ -41,22 +39,29 @@ func (z *ZeroEvenOdd) Zero(printNumber func(int)) {
 }
 
 func (z *ZeroEvenOdd) Even(printNumber func(int)) {
-	for range z.evenCh {
-		printNumber(z.currN)
-		z.currN++
-		if z.currN == z.n {
+	for v := range z.evenCh {
+		printNumber(v)
+		if v == z.n {
 			close(z.zeroCh)
+			return
 		}
+		v++
+
+		z.zeroCh <- v
+
 	}
 }
 
 func (z *ZeroEvenOdd) Odd(printNumber func(int)) {
-	for range z.oddCh {
-		printNumber(z.currN)
-		z.currN++
-		if z.currN == z.n {
+	for v := range z.oddCh {
+		printNumber(v)
+		if v == z.n {
 			close(z.zeroCh)
+			return
 		}
+		v++
+
+		z.zeroCh <- v
 	}
 }
 
