@@ -21,6 +21,7 @@ func findKthLargest(nums []int, k int) int {
 	return heap[0]
 }
 
+// add new element into heap
 func heapifyUp(heap []int) {
 	for j, n := (len(heap)-2)/2, len(heap)-1; ; n, j = j, (j-1)/2 {
 		if heap[j] > heap[n] {
@@ -32,6 +33,7 @@ func heapifyUp(heap []int) {
 	}
 }
 
+// override root and compare with others
 func heapifyDown(heap []int) {
 	for p, l, r := 0, 1, 2; l < len(heap); l, r = 2*p+1, 2*p+2 {
 		if heap[p] >= heap[l] {
