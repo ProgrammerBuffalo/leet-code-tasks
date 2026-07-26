@@ -6,6 +6,9 @@ func main() {
 	fmt.Println(findKthLargest([]int{3, 2, 3, 1, 2, 4, 5, 5, 6, 7, 7, 8, 2, 3, 1, 1, 1, 10, 11, 5, 6, 2, 4, 7, 8, 5, 6}, 20))
 }
 
+// To find the kth largest element in an unsorted array,
+// we should just move elements from the array to the root of the min-heap.
+// Because kth the largest element is always the root of the heap
 func findKthLargest(nums []int, k int) int {
 	heap := make([]int, 0, k)
 	for i := 0; i < len(nums); i++ {
