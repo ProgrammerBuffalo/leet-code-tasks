@@ -1,12 +1,14 @@
-package main
+package list
+
+import "lru-cache/node"
 
 type LinkedList struct {
-	Head *Node
-	Root *Node
+	Head *node.Node
+	Root *node.Node
 }
 
-func (l *LinkedList) Add(key string, val int) *Node {
-	n := &Node{
+func (l *LinkedList) Add(key string, val int) *node.Node {
+	n := &node.Node{
 		Key:   key,
 		Value: val,
 	}
@@ -22,7 +24,7 @@ func (l *LinkedList) Add(key string, val int) *Node {
 	return n
 }
 
-func (l *LinkedList) RemoveByKey(key string) *Node {
+func (l *LinkedList) RemoveByKey(key string) *node.Node {
 	node := l.FindByKey(key)
 
 	if node == nil {
@@ -34,7 +36,7 @@ func (l *LinkedList) RemoveByKey(key string) *Node {
 	return node
 }
 
-func (l *LinkedList) RemoveByNode(node *Node) *Node {
+func (l *LinkedList) RemoveByNode(node *node.Node) *node.Node {
 	ok := l.IsNodeExists(node)
 
 	if ok == false {
@@ -46,7 +48,7 @@ func (l *LinkedList) RemoveByNode(node *Node) *Node {
 	return node
 }
 
-func (l *LinkedList) ChangeRefs(node *Node) {
+func (l *LinkedList) ChangeRefs(node *node.Node) {
 	switch node {
 	case l.Head:
 		l.Head = l.Head.Next
@@ -58,7 +60,7 @@ func (l *LinkedList) ChangeRefs(node *Node) {
 	}
 }
 
-func (l *LinkedList) FindByKey(key string) *Node {
+func (l *LinkedList) FindByKey(key string) *node.Node {
 	for n := l.Head; n != nil; n = n.Next {
 		if n.Key == key {
 			return n
@@ -67,7 +69,7 @@ func (l *LinkedList) FindByKey(key string) *Node {
 	return nil
 }
 
-func (l *LinkedList) IsNodeExists(node *Node) bool {
+func (l *LinkedList) IsNodeExists(node *node.Node) bool {
 	for n := l.Head; n != nil; n = n.Next {
 		if node == n {
 			return true

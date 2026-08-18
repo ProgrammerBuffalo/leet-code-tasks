@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"lru-cache/lru"
 )
 
 func main() {
-	list := LinkedList{}
-	fmt.Print(list)
+	l := lru.LRU{}
+	fmt.Print(l)
 }
