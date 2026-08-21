@@ -2,6 +2,37 @@ package main
 
 import "fmt"
 
+/*
+In my first solution, I tried to put the words into the trie exactly as they
+are presented in the input.
+
+I used a circular queue for memory efficiency. Its size is equal to the
+length of the longest word in words, because it is impossible for a valid
+suffix to be longer than the longest word in the trie.
+
+However, my first approach had a problem with the number of iterations.
+For example, suppose the circular queue contains:
+
+a b c d
+
+If I start traversing the trie from `a` and cannot find the next node, I have
+to try again without the first character. The possible suffix could be `bcd`,
+which may exist in the trie.
+
+So I would have to try:
+
+a -> b -> c -> d
+b -> c -> d
+c -> d
+d
+
+It results in O(N²) time complexity.
+
+This causes the number of iterations to grow very quickly when the stream
+contains many characters or the words are long.
+
+In the test case 19/20 i got TLE
+*/
 type StreamChecker struct {
 	trie *Trie
 
@@ -72,18 +103,27 @@ func (cq *CycleQueue) push(letter byte) {
 func (this *StreamChecker) Query(letter byte) bool {
 	cursor := this.trie
 	this.suffixQueue.push(letter)
-	for i := this.suffixQueue.left; ; i = (i + 1) % len(this.suffixQueue.queue) {
+	for i, j := this.suffixQueue.left, this.suffixQueue.left; ; i = (i + 1) % len(this.suffixQueue.queue) {
 		if foundNode, ok := cursor.children[this.suffixQueue.queue[i]]; ok {
 			cursor = foundNode
 			if cursor.isEnd && i == this.suffixQueue.right {
 				return true
 			}
+		} else {
+			cursor = this.trie
+			i = j
+			j = (j + 1) % len(this.suffixQueue.queue)
 		}
-		if i == this.suffixQueue.right {
-			break
+		if j == this.suffixQueue.right {
+			if cursor == this.trie {
+				rootChild := cursor.children[letter]
+				if rootChild != nil {
+					return rootChild.isEnd
+				}
+			}
+			return false
 		}
 	}
-	return false
 }
 
 func main() {
@@ -101,4 +141,5 @@ func main() {
 	fmt.Println(streamChecker.Query('j'))
 	fmt.Println(streamChecker.Query('k'))
 	fmt.Println(streamChecker.Query('l'))
+
 }
